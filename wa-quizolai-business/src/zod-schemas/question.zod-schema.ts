@@ -8,8 +8,9 @@ export const questionSchema = object({
         question: string({
             required_error: "Question is required",
         }),
-        tags: array(string()).optional(),
-
+        tags: array(string(), {
+            required_error: "Tags are required",
+        }),
         answers: array(string(), {
             required_error: "Answers are required",
         }),
