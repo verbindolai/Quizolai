@@ -26,5 +26,19 @@ export const questionSchema = object({
     })
 });
 
+export const deleteQuestionSchema = object({
+    params: object({
+        id: string({
+            required_error: "Question ID is required",
+        }),
+    }),
+});
+
+
+export const getQuestionSchema = deleteQuestionSchema;
+
+export type DeleteQuestionSchema = TypeOf<typeof deleteQuestionSchema>;
 
 export type QuestionSchema = TypeOf<typeof questionSchema>;
+
+export type GetQuestionSchema = TypeOf<typeof getQuestionSchema>;

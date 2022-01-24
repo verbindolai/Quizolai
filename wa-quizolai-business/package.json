@@ -10,10 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.25.0",
     "config": "^3.3.7",
     "dayjs": "^1.10.7",
     "express": "^4.17.2",
     "mongoose": "^6.1.7",
+    "nanoid": "^3.2.0",
     "pino": "^7.6.4",
     "pino-pretty": "^7.5.0",
     "ts-node": "^10.4.0",

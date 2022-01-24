@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { Types } from 'mongoose';
 import { AnyZodObject } from 'zod';
 import log from '../logger';
 
@@ -16,4 +17,14 @@ const validate = (schema: AnyZodObject) => (req: Request, res: Response, next: N
     }
 
 }
+
+//Needed because zods instanceof somehow doesn't work
+export function checkObjectID(req: Request, res: Response, next: NextFunction) {
+    if (!Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).send("Invalid ID");
+    }
+    next();
+}
+
+
 export default validate;

@@ -2,18 +2,18 @@ import { IQuestion, Question } from '../models/question.model';
 
 const questionDao = {
 
-    async getQuestion(id: number): Promise<IQuestion> {
-        const question = await Question.findOne({ id });
-        if (!question) {
-            throw new Error('Question not found');
-        }
-        return question;
+    async getQuestion(id: string): Promise<IQuestion | null> {
+        return await Question.findOne({ _id: id }, {}, { lean: true });
     },
 
     async saveQuestion(question: IQuestion): Promise<IQuestion> {
-        const newQuestion = new Question(question);
-        return await newQuestion.save();
+        return await new Question(question).save();
+    },
+
+    async deleteQuestion(id: string): Promise<void> {
+        await Question.deleteOne({ _id: id });
     }
+
 };
 
 export default questionDao;
