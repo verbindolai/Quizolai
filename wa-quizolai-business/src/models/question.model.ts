@@ -1,11 +1,12 @@
 import { Schema, model } from 'mongoose';
 import { customAlphabet } from 'nanoid';
-import { addTranslationsToQuestion } from '../service/question.service';
+import log from '../logger';
+import { addTranslationsToQuestion, getProfanityRating } from '../service/question.service';
 
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
 
-export interface IQuestion {
-    questionID: string;
+export class InputQuestion implements IInputQuestion {
+
     author: string;
     question: string;
     tags: string[];
@@ -13,9 +14,41 @@ export interface IQuestion {
     correctAnswer: number;
     category: string;
     difficulty: number;
+
+    constructor(author: string, question: string, tags: string[], answers: string[], correctAnswer: number, category: string, difficulty: number) {
+        this.author = author;
+        this.question = question;
+        this.tags = tags;
+        this.answers = answers;
+        this.correctAnswer = correctAnswer;
+        this.category = category;
+        this.difficulty = difficulty;
+    }
+
+    static fromObject(obj: IInputQuestion): InputQuestion {
+        return new InputQuestion(obj.author, obj.question, obj.tags, obj.answers, obj.correctAnswer, obj.category, obj.difficulty);
+    }
+
+}
+
+export interface IInputQuestion {
+    author: string;
+    question: string;
+    tags: string[];
+    answers: string[];
+    correctAnswer: number;
+    category: string;
+    difficulty: number;
+}
+
+export interface IQuestion extends IInputQuestion {
+    questionID: string;
     translations?: {
         en: string;
     };
+    profanity: number;
+    audited: boolean;
+
     // for mongoose
     createdAt: Date;
     updatedAt: Date;
@@ -32,14 +65,29 @@ const questionSchema = new Schema<IQuestion>(
         category: { type: String, required: true },
         difficulty: { type: Number, required: true },
         translations: { type: { en: String }, required: false },
+        profanity: { type: Number, required: false, default: 0 },
+        audited: { type: Boolean, required: true, default: false, select: false },
     },
     { timestamps: true }
 );
 
-questionSchema.pre('save', async function (next) {
-    const question = this as IQuestion;
-    await addTranslationsToQuestion(question);
+
+
+questionSchema.post('save', async function (doc, next) {
+    const question = doc;
+    getProfanityRating(question.question).then((profanity) => {
+        question.profanity = profanity;
+        Question.updateOne({ _id: question._id }, { $set: { profanity: question.profanity } }).then().catch((err) => log.error(err));
+    }).catch(err => log.error(err)).finally(() => next())
 })
 
+questionSchema.post('save', async function (doc, next) {
+    const question = doc;
+    addTranslationsToQuestion(question).then(() => {
+        Question.updateOne({ _id: question._id }, { $set: { translations: question.translations } }).then().catch((err) => log.error(err));
+    }).catch(err => log.error(err)).finally(() => next())
+});
+
 export const Question = model<IQuestion>('Question', questionSchema);
+
 

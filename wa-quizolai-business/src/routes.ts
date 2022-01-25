@@ -3,7 +3,7 @@ import { StatusCodeError } from './exceptions/exceptions';
 import log from './logger';
 import validateResource from './middleware/validate.mw';
 import { checkObjectID } from './middleware/validate.mw';
-import { Question } from './models/question.model';
+import { InputQuestion } from './models/question.model';
 import { deleteQuestion, getQuestion, saveQuestion } from './service/question.service';
 import { deleteQuestionSchema, getQuestionSchema, questionSchema } from './zod-schemas/question.zod-schema';
 
@@ -14,16 +14,10 @@ function routes(app: Express) {
     });
     app.post('/api/question', validateResource(questionSchema), async (req: Request, res: Response) => {
         try {
-            const savedQuestion = await saveQuestion(req.body);
+            const savedQuestion = await saveQuestion(InputQuestion.fromObject(req.body));
             res.send(savedQuestion);
         } catch (err) {
-            if (err instanceof StatusCodeError) {
-                log.debug(err);
-                return res.status(err.code).send(err.message);
-            } else {
-                log.error(err);
-                return res.sendStatus(500);
-            }
+            handleError(err, req, res, null);
         }
     });
 
@@ -32,13 +26,7 @@ function routes(app: Express) {
             const question = await getQuestion(req.params.id);
             res.status(200).send(question);
         } catch (err) {
-            if (err instanceof StatusCodeError) {
-                log.debug(err);
-                return res.status(err.code).send(err.message);
-            } else {
-                log.error(err);
-                return res.sendStatus(500);
-            }
+            handleError(err, req, res, null);
         }
     });
 
@@ -47,15 +35,19 @@ function routes(app: Express) {
             await deleteQuestion(req.params.id);
             res.sendStatus(200);
         } catch (err) {
-            if (err instanceof StatusCodeError) {
-                log.debug(err);
-                return res.status(err.code).send(err.message);
-            } else {
-                log.error(err);
-                return res.sendStatus(500);
-            }
+            handleError(err, req, res, null);
         }
     });
+}
+
+function handleError(err: any, req: Request, res: Response, next: any) {
+    if (err instanceof StatusCodeError) {
+        log.debug(err);
+        return res.status(err.code).send(err.message);
+    } else {
+        log.error(err);
+        return res.sendStatus(500);
+    }
 }
 
 export default routes;

@@ -1,4 +1,4 @@
-import { IQuestion, Question } from '../models/question.model';
+import { IInputQuestion, IQuestion, Question } from '../models/question.model';
 
 const questionDao = {
 
@@ -6,8 +6,10 @@ const questionDao = {
         return await Question.findOne({ _id: id }, {}, { lean: true });
     },
 
-    async saveQuestion(question: IQuestion): Promise<IQuestion> {
-        return await new Question(question).save();
+    async saveQuestion(inputQuestion: IInputQuestion): Promise<IQuestion> {
+        const question = new Question(inputQuestion);
+        console.log(question);
+        return await question.save();
     },
 
     async deleteQuestion(id: string): Promise<void> {

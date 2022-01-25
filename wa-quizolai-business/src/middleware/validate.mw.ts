@@ -19,7 +19,7 @@ const validate = (schema: AnyZodObject) => (req: Request, res: Response, next: N
 }
 
 //Needed because zods instanceof somehow doesn't work
-export function checkObjectID(req: Request, res: Response, next: NextFunction) {
+export function checkObjectID(req: Request, res: Response, next: NextFunction): Response | void {
     if (!Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).send("Invalid ID");
     }

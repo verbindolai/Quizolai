@@ -1,18 +1,18 @@
-import { IQuestion, Question } from "../models/question.model";
+import { IInputQuestion, IQuestion, Question } from "../models/question.model";
 import questionDao from "../dao/question.dao";
 import axios from 'axios';
 import config from 'config';
 import log from '../logger';
 import { StatusCodeError } from "../exceptions/exceptions";
 
-export async function saveQuestion(question: IQuestion): Promise<IQuestion> {
+export async function saveQuestion(question: IInputQuestion): Promise<IQuestion> {
 
-    if (question.questionID) {
-        const foundQuestion = await Question.findOne({ questionID: question.questionID });
-        if (foundQuestion) {
-            throw new StatusCodeError("Question already exists", 400);
-        }
-    }
+    // if (question.questionID) {
+    //     const foundQuestion = await Question.findOne({ questionID: question.questionID });
+    //     if (foundQuestion) {
+    //         throw new StatusCodeError("Question already exists", 400);
+    //     }
+    // }
     return questionDao.saveQuestion(question);
 
 }
@@ -32,6 +32,38 @@ export async function getQuestion(id: string): Promise<IQuestion> {
     }
     return question;
 }
+
+
+export async function getProfanityRating(text: string): Promise<string> {
+
+    const url = config.get<string>('openaiFilterURL');
+    const auth = config.get<string>('openaiAUTH');
+
+    try {
+        const response = await axios({
+            method: 'post',
+            url: url,
+            headers: {
+                'Authorization': 'Bearer ' + auth,
+                'Content-Type': 'application/json'
+            },
+            data: {
+                prompt: `<|endoftext|>${text}\n--\nLabel:`,
+                temperature: 0,
+                max_tokens: 1,
+                top_p: 0,
+                logprobs: 10,
+            }
+        });
+        const profanity = response.data.choices[0].text as string;
+        log.debug(`Profanity: ${profanity}`);
+        return profanity;
+    } catch (err) {
+        log.error(err);
+        throw new Error("Error getting profanity rating from openAI");
+    }
+}
+
 
 export async function addTranslationsToQuestion(question: IQuestion) {
 
