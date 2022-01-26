@@ -1,4 +1,5 @@
-import { IInputQuestion, IQuestion, Question } from "../models/question.model";
+import { Question } from "../models/question.model";
+import { IQuestion, IInputQuestion } from "../../../wa-quizolai-shared";
 import questionDao from "../dao/question.dao";
 import axios from 'axios';
 import config from 'config';
@@ -6,15 +7,7 @@ import log from '../logger';
 import { StatusCodeError } from "../exceptions/exceptions";
 
 export async function saveQuestion(question: IInputQuestion): Promise<IQuestion> {
-
-    // if (question.questionID) {
-    //     const foundQuestion = await Question.findOne({ questionID: question.questionID });
-    //     if (foundQuestion) {
-    //         throw new StatusCodeError("Question already exists", 400);
-    //     }
-    // }
     return questionDao.saveQuestion(question);
-
 }
 
 export async function deleteQuestion(id: string): Promise<void> {
@@ -33,6 +26,9 @@ export async function getQuestion(id: string): Promise<IQuestion> {
     return question;
 }
 
+export async function getQuestions(): Promise<IQuestion[]> {
+    return questionDao.getAllQuestions();
+}
 
 export async function getProfanityRating(text: string): Promise<string> {
 

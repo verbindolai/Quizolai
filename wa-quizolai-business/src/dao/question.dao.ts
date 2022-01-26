@@ -6,15 +6,20 @@ const questionDao = {
         return await Question.findOne({ _id: id }, {}, { lean: true });
     },
 
+    async getAllQuestions(): Promise<IQuestion[]> {
+        return await Question.find({}, {}, { lean: true });
+    },
+
     async saveQuestion(inputQuestion: IInputQuestion): Promise<IQuestion> {
         const question = new Question(inputQuestion);
-        console.log(question);
         return await question.save();
     },
 
     async deleteQuestion(id: string): Promise<void> {
         await Question.deleteOne({ _id: id });
     }
+
+
 
 };
 

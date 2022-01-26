@@ -4,7 +4,7 @@ import log from './logger';
 import validateResource from './middleware/validate.mw';
 import { checkObjectID } from './middleware/validate.mw';
 import { InputQuestion } from './models/question.model';
-import { deleteQuestion, getQuestion, saveQuestion } from './service/question.service';
+import { deleteQuestion, getQuestion, getQuestions, saveQuestion } from './service/question.service';
 import { deleteQuestionSchema, getQuestionSchema, questionSchema } from './zod-schemas/question.zod-schema';
 
 function routes(app: Express) {
@@ -12,6 +12,7 @@ function routes(app: Express) {
     app.get('/ping', (req: Request, res: Response) => {
         res.sendStatus(200);
     });
+
     app.post('/api/question', validateResource(questionSchema), async (req: Request, res: Response) => {
         try {
             const savedQuestion = await saveQuestion(InputQuestion.fromObject(req.body));
@@ -25,6 +26,16 @@ function routes(app: Express) {
         try {
             const question = await getQuestion(req.params.id);
             res.status(200).send(question);
+        } catch (err) {
+            handleError(err, req, res, null);
+        }
+    });
+
+    //route to get all questions
+    app.get('/api/questions', async (req: Request, res: Response) => {
+        try {
+            const questions = await getQuestions();
+            res.status(200).send(questions);
         } catch (err) {
             handleError(err, req, res, null);
         }

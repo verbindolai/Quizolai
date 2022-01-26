@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 import { customAlphabet } from 'nanoid';
 import log from '../logger';
 import { addTranslationsToQuestion, getProfanityRating } from '../service/question.service';
+import { IQuestion, IInputQuestion } from "../../../wa-quizolai-shared";
 
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
 
@@ -29,29 +30,6 @@ export class InputQuestion implements IInputQuestion {
         return new InputQuestion(obj.author, obj.question, obj.tags, obj.answers, obj.correctAnswer, obj.category, obj.difficulty);
     }
 
-}
-
-export interface IInputQuestion {
-    author: string;
-    question: string;
-    tags: string[];
-    answers: string[];
-    correctAnswer: number;
-    category: string;
-    difficulty: number;
-}
-
-export interface IQuestion extends IInputQuestion {
-    questionID: string;
-    translations?: {
-        en: string;
-    };
-    profanity: number;
-    audited: boolean;
-
-    // for mongoose
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 const questionSchema = new Schema<IQuestion>(
