@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 import { AnyZodObject } from 'zod';
-import log from '../logger';
+import log from '../util/logger';
 
-const validate = (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
+export const zodValidate = (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
     try {
         schema.parse({
             body: req.body,
@@ -25,6 +25,3 @@ export function checkObjectID(req: Request, res: Response, next: NextFunction): 
     }
     next();
 }
-
-
-export default validate;

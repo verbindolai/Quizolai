@@ -10,7 +10,7 @@ import { IQuestion } from "../../../../../wa-quizolai-shared"
 })
 export class QuestionDisplayComponent implements OnInit {
 
-  displayedColumns: string[] = ['author', 'question', 'category', 'tags', 'date', 'actions'];
+  displayedColumns: string[] = ['author', 'question', 'answers', 'category', 'tags', 'date', 'actions'];
   dataSource: IQuestion[] = [];
 
   constructor(private questionService: QuestionService) { }

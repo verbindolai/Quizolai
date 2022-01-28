@@ -7,7 +7,6 @@ export interface IInputQuestion {
     category: string;
     difficulty: number;
 }
-
 export interface IQuestion extends IInputQuestion {
     questionID: string;
     translations?: {
@@ -15,8 +14,7 @@ export interface IQuestion extends IInputQuestion {
     };
     profanity: number;
     audited: boolean;
-
-    // for mongoose
     createdAt: Date;
     updatedAt: Date;
 }
+//# sourceMappingURL=question.interface.d.ts.map

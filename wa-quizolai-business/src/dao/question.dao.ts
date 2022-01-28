@@ -1,4 +1,5 @@
-import { IInputQuestion, IQuestion, Question } from '../models/question.model';
+import { Question } from '../models/question.model';
+import { IQuestion, IInputQuestion } from "../../../wa-quizolai-shared";
 
 const questionDao = {
 

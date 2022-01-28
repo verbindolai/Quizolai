@@ -12,6 +12,6 @@ export class QuestionService {
   constructor(private http: HttpClient) { }
 
   getQuestions(): Observable<IQuestion[]> {
-    return this.http.get('http://localhost:50000/questions') as Observable<IQuestion[]>;
+    return this.http.get('http://localhost:50000/api/questions') as Observable<IQuestion[]>;
   }
 }

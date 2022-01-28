@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { customAlphabet } from 'nanoid';
-import log from '../logger';
+import log from '../util/logger';
 import { addTranslationsToQuestion, getProfanityRating } from '../service/question.service';
 import { IQuestion, IInputQuestion } from "../../../wa-quizolai-shared";
 

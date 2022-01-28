@@ -3,8 +3,8 @@ import { IQuestion, IInputQuestion } from "../../../wa-quizolai-shared";
 import questionDao from "../dao/question.dao";
 import axios from 'axios';
 import config from 'config';
-import log from '../logger';
-import { StatusCodeError } from "../exceptions/exceptions";
+import log from '../util/logger';
+import { StatusCodeError } from "../util/exceptions/exceptions";
 
 export async function saveQuestion(question: IInputQuestion): Promise<IQuestion> {
     return questionDao.saveQuestion(question);
