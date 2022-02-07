@@ -1,0 +1,16 @@
+<mat-form-field class="w-full" appearance="fill">
+  <mat-label>{{label}}</mat-label>
+  <mat-chip-list #chipList aria-label="Chips">
+    <mat-chip #c="matChip" *ngFor="let chip of chips" color="primary" (removed)="remove(chip)" (selectionChange)="chip.correct = c.selected">
+      {{chip.answer}}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+    <input placeholder="{{placeholder}}"
+           [matChipInputFor]="chipList"
+           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+           [matChipInputAddOnBlur]="addOnBlur"
+           (matChipInputTokenEnd)="add($event)" required={{required}}>
+  </mat-chip-list>
+</mat-form-field>

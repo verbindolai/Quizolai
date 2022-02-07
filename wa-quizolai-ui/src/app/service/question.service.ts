@@ -14,4 +14,8 @@ export class QuestionService {
   getQuestions(): Observable<IQuestion[]> {
     return this.http.get('http://localhost:50000/api/questions') as Observable<IQuestion[]>;
   }
+
+  deleteQuestion(id: string) {
+    return this.http.delete('http://localhost:50000/api/question/' + id) as Observable<IQuestion>;
+  }
 }

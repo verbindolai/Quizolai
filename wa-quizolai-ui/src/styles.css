@@ -1,11 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-html, body { height: 100%; }
-body { 
-    margin: 0; 
-    font-family: Roboto, "Helvetica Neue", sans-serif; 
-    @apply bg-zinc-800;
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  @apply bg-zinc-800;
+}
+table {
+  width: 100%;
+}
+
+.mat-cell,
+.mat-header-cell,
+.my-mat-cell,
+.my-mat-header-cell {
+  @apply text-zinc-100;
 }

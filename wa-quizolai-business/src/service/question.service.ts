@@ -1,34 +1,7 @@
-import { Question } from "../models/question.model";
-import { IQuestion, IInputQuestion } from "../../../wa-quizolai-shared";
-import questionDao from "../dao/question.dao";
+import { IQuestion } from "../../../wa-quizolai-shared";
 import axios from 'axios';
 import config from 'config';
 import log from '../util/logger';
-import { StatusCodeError } from "../util/exceptions/exceptions";
-
-export async function saveQuestion(question: IInputQuestion): Promise<IQuestion> {
-    return questionDao.saveQuestion(question);
-}
-
-export async function deleteQuestion(id: string): Promise<void> {
-    const question = await Question.findOne({ id: id });
-    if (!question) {
-        throw new StatusCodeError(`Question with id ${id} not found`, 404);
-    }
-    return questionDao.deleteQuestion(id);
-}
-
-export async function getQuestion(id: string): Promise<IQuestion> {
-    const question = await questionDao.getQuestion(id);
-    if (!question) {
-        throw new StatusCodeError(`Question with id ${id} not found`, 404);
-    }
-    return question;
-}
-
-export async function getQuestions(): Promise<IQuestion[]> {
-    return questionDao.getAllQuestions();
-}
 
 export async function getProfanityRating(text: string): Promise<string> {
 

@@ -1,19 +1,10 @@
-table {
-    width: 100%;
-}
-
-.mat-cell, .mat-header-cell {
-    @apply text-zinc-100;
-}
-
 /* Language: css */
 /* Path: wa-quizolai-ui\src\app\components\question-display\question-display.component.css */
 .question-display-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-

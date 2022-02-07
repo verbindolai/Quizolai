@@ -1,0 +1,30 @@
+/* Needed because of this: https://github.com/angular/components/issues/3805#issuecomment-348473462 */
+
+.my-mat-table {
+  display: block;
+}
+
+.my-mat-row,
+.my-mat-header-row {
+  display: flex;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0, 0, 0, 0.12);
+  align-items: center;
+  min-height: 48px;
+  padding: 0 24px;
+}
+
+.my-mat-cell,
+.my-mat-header-cell {
+  flex: 1;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+#save_questions_button {
+  margin-top: 16px;
+  margin-left: 5px;
+}
+#add_questions_form_container {
+}

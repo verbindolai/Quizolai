@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Add a new Question.</h1>
+<form>
+
+  <mat-form-field class="" appearance="fill">
+    <mat-label>Author</mat-label>
+    <input matInput type="text" [(ngModel)]="data.author" name="author_input">
+  </mat-form-field>
+
+  <mat-form-field class="w-full" appearance="fill">
+    <mat-label>Question Text</mat-label>
+    <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+  </mat-form-field>
+
+  <app-chip-input label="Answers" placeholder="Add an answer" [(chips)]="data.answers" name="tag_input"></app-chip-input>
+
+  <mat-form-field class="" appearance="fill">
+    <mat-label>Category</mat-label>
+    <input matInput type="text">
+  </mat-form-field>
+
+  <app-chip-input label="Tags" placeholder="Add a tag"></app-chip-input>
+
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Submit</button>
+</form>

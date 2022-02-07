@@ -19,11 +19,30 @@ export class QuestionDisplayComponent implements OnInit {
     this.questionService.getQuestions().subscribe({
       next: (questions: IQuestion[]) => {
         this.dataSource = questions;
+        console.log(questions);
       },
       error: (err) => {
         console.error(err);
       }
     });
+  }
+
+  deleteQuestion(question: IQuestion) {
+    console.log(question);
+    if (confirm("Are you sure you want to delete this question?")) {
+      this.questionService.deleteQuestion(question._id).subscribe({
+        next: (deletedQuestion: IQuestion) => {
+          this.dataSource = this.dataSource.filter(q => q._id !== deletedQuestion._id);
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  editQuestion(question: IQuestion) {
+    console.log(question);
   }
 
 }
