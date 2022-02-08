@@ -12,6 +12,16 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   @apply bg-zinc-800;
 }
+
+.mat-progress-spinner circle, .mat-spinner circle {
+  @apply stroke-zinc-100;
+}
+
+mat-dialog-container {
+  /*@apply bg-zinc-800 !important;*/
+  /*@apply text-zinc-100 !important;*/
+}
+
 table {
   width: 100%;
 }

@@ -18,10 +18,12 @@ import {MatInputModule} from '@angular/material/input';
 import { QuestionFormComponent } from './components/question-form/question-form.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { AddQuestionDialogComponent } from './components/question-form/add-question-dialog/add-question-dialog.component';
-import { ChipInputComponent } from './components/general/chip-input/chip-input.component';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatSliderModule} from "@angular/material/slider";
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -30,7 +32,7 @@ import { FormsModule } from '@angular/forms';
     QuestionDisplayComponent,
     QuestionFormComponent,
     AddQuestionDialogComponent,
-    ChipInputComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -46,7 +48,11 @@ import { FormsModule } from '@angular/forms';
     MatDialogModule,
     MatChipsModule,
     MatSidenavModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    MatSliderModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule
 
   ],
   providers: [],

@@ -3,6 +3,10 @@ export interface IQuestionAnswer {
     correct: boolean;
 }
 
+export interface ITag {
+    name: string;
+}
+
 export interface IInputQuestion {
     author: string;
     question: string;

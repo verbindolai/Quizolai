@@ -1,6 +1,10 @@
-import { IQuestionFormInput } from './../question-form.component';
-import { Component, Inject, OnInit } from '@angular/core';
+import { IQuestionFormInput } from '../question-form.component';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {ENTER} from "@angular/cdk/keycodes";
+import {IQuestionAnswer} from "../../../../../../wa-quizolai-shared";
+import {MatChipInputEvent} from "@angular/material/chips";
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-add-question-dialog',
@@ -14,18 +18,64 @@ export class AddQuestionDialogComponent implements OnInit {
     question: "",
     answers : [],
     category: "",
+    difficulty: 0,
     tags: [],
+    id: uuidv4()
   };
 
-  constructor(public dialogRef: MatDialogRef<AddQuestionDialogComponent>, @Inject(MAT_DIALOG_DATA) public inputData : any ) { }
+  addOnBlur = true;
+  readonly separatorKeysCodes = [ENTER] as const;
 
-  ngOnInit(): void {
-    this.data;
+
+  constructor(public dialogRef: MatDialogRef<AddQuestionDialogComponent>, @Inject(MAT_DIALOG_DATA) public inputData : any ) {
+
   }
 
+  ngOnInit(): void {
+    //TODO
+    if(this.inputData){
+      this.data =  JSON.parse(JSON.stringify(this.inputData));
+    }
+
+  }
+  addAnswer(event: MatChipInputEvent): void {
+    const value = (event.value || '');
+
+    if (value && !/^\s*$/.test(value)) {
+      this.data.answers.push({answer: value, correct: false});
+    }
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+
+  removeAsnwer(answer:  IQuestionAnswer): void {
+    const index = this.data.answers.indexOf(answer);
+    if (index >= 0) {
+      this.data.answers.splice(index, 1);
+    }
+  }
+
+  addTag(event: MatChipInputEvent): void {
+    const value = (event.value || '');
+
+    if (value) {
+      this.data.tags.push(value);
+    }
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+
+  removeTag(tag: string): void {
+    const index = this.data.tags.indexOf(tag);
+
+    if (index >= 0) {
+      this.data.tags.splice(index, 1);
+    }
+  }
 
 
   onNoClick(): void {
     this.dialogRef.close();
   }
+
 }

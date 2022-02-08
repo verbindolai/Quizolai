@@ -38,7 +38,7 @@ const questionSchema = new Schema<IQuestion>(
         question: { type: String, required: true },
         tags: { type: [String], required: true },
         answers: { type: [{answer: String, correct: Boolean}], required: true },
-        category: { type: String, required: true },
+        category: { type: String, required: false },
         difficulty: { type: Number, required: true },
         translations: { type: { en: String }, required: false },
         profanity: { type: Number, required: false, default: 1 },

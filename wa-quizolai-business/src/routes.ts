@@ -24,7 +24,10 @@ function routes(app: Express) {
     //Array of q
     app.post('/api/questions', zodValidate(questionArrayBodySchema), async (req: Request, res: Response) => {
         try {
-            const savedQuestions = await questionDao.saveQuestions(req.body.map(InputQuestion.fromObject));
+            const questions = req.body.map(InputQuestion.fromObject)
+            log.debug(questions);
+
+            const savedQuestions = await questionDao.saveQuestions(questions);
             res.send(savedQuestions);
         } catch (err) {
             handleError(err, req, res, null);
