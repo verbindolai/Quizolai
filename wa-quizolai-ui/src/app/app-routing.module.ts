@@ -2,7 +2,7 @@ import { QuestionFormComponent } from './components/question-form/question-form.
 import { QuestionDisplayComponent } from './components/question-display/question-display.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
+import {AuthGuard} from "@auth0/auth0-angular";
 
 const routes: Routes = [
 
@@ -16,7 +16,8 @@ const routes: Routes = [
   },
   {
     path: 'add',
-    component: QuestionFormComponent
+    component: QuestionFormComponent,
+    canActivate: [AuthGuard]
   }
 ];
 

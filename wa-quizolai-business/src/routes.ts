@@ -1,10 +1,12 @@
-import { Express, Request, Response } from 'express';
+import {Express, NextFunction, Request, Response} from 'express';
 import { StatusCodeError } from './util/exceptions/exceptions';
 import log from './util/logger';
 import { zodValidate, checkObjectID } from './middleware';
 import { InputQuestion } from './models/question.model';
 import questionDao from './dao/question.dao';
 import { deleteQuestionSchema, getQuestionSchema, questionBodySchema, questionArrayBodySchema } from './zod-schemas/question.zod-schema';
+import * as auth from './middleware/auth.mw';
+
 
 function routes(app: Express) {
 
@@ -22,7 +24,7 @@ function routes(app: Express) {
     });
 
     //Array of q
-    app.post('/api/questions', zodValidate(questionArrayBodySchema), async (req: Request, res: Response) => {
+    app.post('/api/questions', [zodValidate(questionArrayBodySchema)], async (req: Request, res: Response) => {
         try {
             const questions = req.body.map(InputQuestion.fromObject)
             log.debug(questions);
@@ -44,8 +46,8 @@ function routes(app: Express) {
         }
     });
 
-    //route to get all questions with profanity rating 0
-    app.get('/api/questions', async (req: Request, res: Response) => {
+    //route to get all questions with profanity rating 0 , allowSafeQuestionRead
+    app.get('/api/questions', [auth.checkJwt, auth.checkPermissions(["read:safequestions"])], async (req: Request, res: Response) => {
         try {
             const questions = await questionDao.getSaveQuestions();
             res.status(200).send(questions);
@@ -54,9 +56,7 @@ function routes(app: Express) {
         }
     });
 
-    //route to get all questions 
-    //TODO authentication
-    // app.get('/api/questions', async (req: Request, res: Response) => {
+    // app.get('/api/questions', [auth.checkJwt, auth.checkPermissions(["read:questions"])], async (req: Request, res: Response) => {
     //     try {
     //         const questions = await questionDao.getQuestions();
     //         res.status(200).send(questions);
@@ -65,11 +65,14 @@ function routes(app: Express) {
     //     }
     // });
 
+    //TODO authentication, user can only update their own questions!!!
     //route to update a question
-    app.put('/api/question/:id', [zodValidate(questionBodySchema), checkObjectID], async (req: Request, res: Response) => {
+    app.put('/api/question/:id', [auth.checkJwt, zodValidate(questionBodySchema), checkObjectID], async (req: Request, res: Response) => {
         try {
-            const question = await questionDao.saveQuestion(InputQuestion.fromObject(req.body));
-            res.status(200).send(question);
+            const inputQuestion = InputQuestion.fromObject(req.body);
+            const id = req.params.id;
+           const question = await questionDao.updateQuestion(id, inputQuestion);
+           res.status(200).send(question);
         } catch (err) {
             handleError(err, req, res, null);
         }

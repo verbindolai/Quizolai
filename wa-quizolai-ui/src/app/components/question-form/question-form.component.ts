@@ -1,10 +1,12 @@
-import { AddQuestionDialogComponent } from './add-question-dialog/add-question-dialog.component';
+import { AddQuestionDialogComponent } from '../add-question-dialog/add-question-dialog.component';
 import { IQuestionAnswer, IInputQuestion } from '../../../../../wa-quizolai-shared';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {QuestionDisplayComponent} from "../question-display/question-display.component";
 import {QuestionService} from "../../service/question.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {AuthService} from "@auth0/auth0-angular";
+import {profilingEnabled} from "@angular-devkit/build-angular/src/utils/environment-options";
 
 export interface IQuestionFormInput {
   author: string;
@@ -33,7 +35,7 @@ export class QuestionFormComponent implements OnInit {
   getStringsFromQuestionAnswerArray = QuestionDisplayComponent.getStringsFromQuestionAnswerArray;
 
 
-  constructor(public dialog: MatDialog, private questionService : QuestionService, private _snackBar: MatSnackBar) {}
+  constructor(public auth : AuthService, public dialog: MatDialog, private questionService : QuestionService, private _snackBar: MatSnackBar) {}
 
   openDialog(data? : any): void {
     const dialogRef = this.dialog.open(AddQuestionDialogComponent, {
@@ -70,6 +72,11 @@ export class QuestionFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.auth.user$.subscribe((profile) => {
+      if(profile) {
+        console.log(profile);
+      }
+    });
   }
 
   editQuestion(question : IQuestionFormInput) {
@@ -83,7 +90,6 @@ export class QuestionFormComponent implements OnInit {
   }
 
   saveQuestions() {
-
     if(this.addedQuestions.length === 0) {
       this._snackBar.open("No questions to save", "close", {
         duration: 2000,

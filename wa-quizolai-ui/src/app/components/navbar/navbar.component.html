@@ -1,7 +1,9 @@
 <mat-toolbar color="primary" class="text-zinc-100">
-    <span>{{ title }}</span>
+  <span><a routerLink="">{{ title }}</a></span>
     <span class="spacer"></span>
     <a mat-button routerLink="/questions" routerLinkActive="active">Questions</a>
-    <a mat-button  routerLink="/add"  routerLinkActive="active">Add</a>
+    <a mat-button  routerLink="/add"  routerLinkActive="active" *ngIf="auth.user$ | async as user">Add</a>
     <a mat-button   routerLinkActive="active">Documentation</a>
+    <app-login-button *ngIf="(auth.isAuthenticated$ | async) === false"></app-login-button>
+    <app-logout-button  *ngIf="auth.isAuthenticated$ | async"></app-logout-button>
 </mat-toolbar>

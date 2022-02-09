@@ -56,6 +56,7 @@
   <ng-container matColumnDef="loadingSpinner">
     <td mat-footer-cell *matFooterCellDef colspan="8" style="text-align: center;">
       <mat-spinner *ngIf="dataLoading" class="fill-gray-200 inline-block ml-2" diameter="34" strokeWidth="6" ></mat-spinner>
+      <span *ngIf="!dataLoading && this.dataSource.length === 0" class="text-zinc-200 text-xs italic">No questions.</span>
     </td>
   </ng-container>
 

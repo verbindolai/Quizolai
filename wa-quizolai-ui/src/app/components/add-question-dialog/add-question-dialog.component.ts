@@ -1,8 +1,8 @@
-import { IQuestionFormInput } from '../question-form.component';
+import { IQuestionFormInput } from '../question-form/question-form.component';
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {ENTER} from "@angular/cdk/keycodes";
-import {IQuestionAnswer} from "../../../../../../wa-quizolai-shared";
+import {IQuestion, IQuestionAnswer} from "../../../../../wa-quizolai-shared";
 import {MatChipInputEvent} from "@angular/material/chips";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -76,6 +76,18 @@ export class AddQuestionDialogComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  static getQuestionFormInputFromIQuestion(question: IQuestion) : IQuestionFormInput {
+    return {
+      author: question.author,
+      question: question.question,
+      answers : question.answers,
+      category: question.category,
+      difficulty: question.difficulty,
+      tags: question.tags,
+      id: question._id
+    };
   }
 
 }

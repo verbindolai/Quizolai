@@ -5,7 +5,6 @@ import { connect } from './util/connect';
 import routes from './routes';
 import helmet from 'helmet';
 import cors from 'cors';
-
 const port = config.get<number>('port');
 const app = express();
 
@@ -13,6 +12,8 @@ const corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200,
 };
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

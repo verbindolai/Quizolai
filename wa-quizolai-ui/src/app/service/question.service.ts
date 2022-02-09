@@ -26,4 +26,9 @@ export class QuestionService {
   addQuestions(questions : IQuestionFormInput[]) {
     return this.http.post('http://localhost:50000/api/questions', questions) as Observable<IQuestion[]>;
   }
+
+  updateQuestion(id: string, question: IQuestionFormInput) {
+    return this.http.put('http://localhost:50000/api/question/' + id, question) as Observable<IQuestion>;
+  }
+
 }
