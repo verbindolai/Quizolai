@@ -17,6 +17,7 @@ export interface IInputQuestion {
 }
 export interface IQuestion extends IInputQuestion {
     _id: string;
+    userID: string;
     questionID: string;
     translations?: {
         en: string;

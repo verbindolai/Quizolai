@@ -5,7 +5,9 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {AddQuestionDialogComponent} from "../add-question-dialog/add-question-dialog.component";
 import {IQuestionFormInput} from "../question-form/question-form.component";
 import {MatDialog} from "@angular/material/dialog";
-
+import {AuthService} from "@auth0/auth0-angular";
+import jwt_decode from 'jwt-decode';
+import {UserService} from "../../service/user.service";
 
 @Component({
   selector: 'app-question-display',
@@ -17,18 +19,20 @@ export class QuestionDisplayComponent implements OnInit {
   displayedColumns: string[] = ['author', 'question', 'answers', 'category', 'tags', 'difficulty', 'date', 'actions'];
   dataSource: IQuestion[] = [];
   dataLoading = false;
+  canEdit = false;
 
-  constructor(private questionService: QuestionService, private _snackBar: MatSnackBar, public dialog: MatDialog) {
+  constructor(private questionService: QuestionService, private _snackBar: MatSnackBar, public dialog: MatDialog, public auth : AuthService, public userService : UserService) {
   }
 
   getStringsFromQuestionAnswerArray = QuestionDisplayComponent.getStringsFromQuestionAnswerArray;
 
   ngOnInit(): void {
     this.dataLoading = true;
+
     this.questionService.getQuestions().subscribe({
-      next: (questions: IQuestion[]) => {
-        this.dataSource = questions;
-      },
+       next: (questions: IQuestion[]) => {
+         this.dataSource = questions;
+       },
       error: (err) => {
         this.dataLoading = false;
         this._snackBar.open("Error loading questions", "Close", {
@@ -38,6 +42,9 @@ export class QuestionDisplayComponent implements OnInit {
       complete: () => {
         this.dataLoading = false;
       }
+     });
+    this.userService.canEdit().then((canEdit) => {
+      this.canEdit = canEdit;
     });
   }
 

@@ -1,36 +1,46 @@
 import {Express, NextFunction, Request, Response} from 'express';
-import { StatusCodeError } from './util/exceptions/exceptions';
+import {StatusCodeError} from './util/exceptions/exceptions';
 import log from './util/logger';
-import { zodValidate, checkObjectID } from './middleware';
-import { InputQuestion } from './models/question.model';
+import {zodValidate, checkObjectID} from './middleware';
+import {InputQuestion} from './models/question.model';
 import questionDao from './dao/question.dao';
-import { deleteQuestionSchema, getQuestionSchema, questionBodySchema, questionArrayBodySchema } from './zod-schemas/question.zod-schema';
+import {
+    deleteQuestionSchema,
+    getQuestionSchema,
+    questionBodySchema,
+    questionArrayBodySchema
+} from './zod-schemas/question.zod-schema';
 import * as auth from './middleware/auth.mw';
 
 
 function routes(app: Express) {
 
     app.get('/ping', (req: Request, res: Response) => {
-        res.sendStatus(200);
+        res.sendStatus(200).send("pong");
     });
 
-    app.post('/api/question', zodValidate(questionBodySchema), async (req: Request, res: Response) => {
+    app.post('/api/question', [auth.checkJwt, auth.checkPermissions(["add:questions"]), auth.checkUserID, zodValidate(questionBodySchema)], async (req: Request, res: Response) => {
         try {
-            const savedQuestion = await questionDao.saveQuestion(InputQuestion.fromObject(req.body));
-            res.send(savedQuestion);
+            const question = InputQuestion.fromObject(req.body);
+            const userID = req.auth?.payload.sub as string;
+            log.debug(question, userID);
+            const savedQuestion = await questionDao.saveQuestion(question, userID);
+            res.status(200).send(savedQuestion);
         } catch (err) {
             handleError(err, req, res, null);
         }
     });
 
-    //Array of q
-    app.post('/api/questions', [zodValidate(questionArrayBodySchema)], async (req: Request, res: Response) => {
+    //Array of questions
+    app.post('/api/questions', [auth.checkJwt, auth.checkPermissions(["add:questions"]), auth.checkUserID, zodValidate(questionArrayBodySchema)], async (req: Request, res: Response) => {
         try {
-            const questions = req.body.map(InputQuestion.fromObject)
-            log.debug(questions);
-
-            const savedQuestions = await questionDao.saveQuestions(questions);
-            res.send(savedQuestions);
+            const permissions = req.auth?.payload.permissions as string[];
+            log.info(permissions)
+            const questions: InputQuestion[] = req.body.map(InputQuestion.fromObject)
+            const userID = req.auth?.payload.sub as string;
+            log.debug(questions, userID);
+            const savedQuestions = await questionDao.saveQuestions(questions, userID);
+            res.status(200).send(savedQuestions);
         } catch (err) {
             handleError(err, req, res, null);
         }
@@ -47,7 +57,7 @@ function routes(app: Express) {
     });
 
     //route to get all questions with profanity rating 0 , allowSafeQuestionRead
-    app.get('/api/questions', [auth.checkJwt, auth.checkPermissions(["read:safequestions"])], async (req: Request, res: Response) => {
+    app.get('/api/questions', [], async (req: Request, res: Response) => {
         try {
             const questions = await questionDao.getSaveQuestions();
             res.status(200).send(questions);
@@ -65,24 +75,31 @@ function routes(app: Express) {
     //     }
     // });
 
-    //TODO authentication, user can only update their own questions!!!
-    //route to update a question
-    app.put('/api/question/:id', [auth.checkJwt, zodValidate(questionBodySchema), checkObjectID], async (req: Request, res: Response) => {
+    app.put('/api/question/:id', [auth.checkJwt, auth.checkUserID, zodValidate(questionBodySchema), checkObjectID], async (req: Request, res: Response) => {
         try {
             const inputQuestion = InputQuestion.fromObject(req.body);
             const id = req.params.id;
-           const question = await questionDao.updateQuestion(id, inputQuestion);
-           res.status(200).send(question);
+            const userID = req.auth?.payload.sub as string;
+            const permissions = req.auth?.payload.permissions as string[];
+            log.debug(id, userID, permissions);
+
+            const question = await questionDao.updateQuestion(id, inputQuestion, userID, permissions);
+            res.status(200).send(question);
         } catch (err) {
             handleError(err, req, res, null);
         }
     });
 
-    app.delete('/api/question/:id', [zodValidate(deleteQuestionSchema), checkObjectID], async (req: Request, res: Response) => {
+    app.delete('/api/question/:id',  [auth.checkJwt, auth.checkUserID, zodValidate(deleteQuestionSchema), checkObjectID], async (req: Request, res: Response) => {
         try {
-            log.debug("Deleting: " + req.params.id);
-            const deletedQuestion = await questionDao.deleteQuestion(req.params.id);
-            res.send(deletedQuestion);
+
+            const id = req.params.id;
+            const userID = req.auth?.payload.sub as string;
+            const permissions = req.auth?.payload.permissions as string[];
+            log.debug(id, userID, permissions);
+
+            const deletedQuestion = await questionDao.deleteQuestion(id, userID, permissions);
+            res.status(200).send(deletedQuestion);
         } catch (err) {
             handleError(err, req, res, null);
         }

@@ -62,7 +62,24 @@ import { LogoutButtonComponent } from './components/general/logout-button/logout
     AuthModule.forRoot({
       ...env.auth,
       httpInterceptor:{
-        allowedList: [`${env.dev.serverUrl}/api/questions`]
+        allowedList: [
+          {
+            uri: `${env.dev.serverUrl}/api/question`,
+            httpMethod: 'POST'
+          },
+          {
+            uri: `${env.dev.serverUrl}/api/questions`,
+            httpMethod: 'POST'
+          },
+          {
+            uri: `${env.dev.serverUrl}/api/question/*`,
+            httpMethod: 'DELETE'
+          },
+          {
+            uri: `${env.dev.serverUrl}/api/question/*`,
+            httpMethod: 'PUT'
+          },
+        ]
       }
     }),
 

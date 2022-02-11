@@ -19,6 +19,11 @@
     "target": "es2017",
     "module": "es2020",
     "resolveJsonModule": true,
+    "paths": {
+      "@quizolai-shared/*": [
+        "../wa-quizolai-shared/*"
+      ]
+    },
     "lib": [
       "es2020",
       "dom"

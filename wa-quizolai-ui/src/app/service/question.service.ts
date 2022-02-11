@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { IQuestion } from "../../../../wa-quizolai-shared"
+import { IQuestion } from "@quizolai-shared/interface/question.interface";
 import {IQuestionFormInput} from "../components/question-form/question-form.component";
 
 

@@ -44,12 +44,15 @@
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> <span *ngIf="this.dataSource.length > 0">Actions</span> </th>
         <td mat-cell *matCellDef="let element">
+          <div *ngIf="(element.userID === (auth.user$ | async)?.sub) || canEdit">
             <button mat-icon-button (click)="editQuestion(element)">
-                <mat-icon>edit</mat-icon>
+              <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button (click)="deleteQuestion(element)">
-                <mat-icon>delete</mat-icon>
+              <mat-icon>delete</mat-icon>
             </button>
+          </div>
+
         </td>
     </ng-container>
 

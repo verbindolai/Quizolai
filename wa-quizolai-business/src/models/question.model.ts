@@ -1,9 +1,9 @@
-import { IQuestionAnswer } from './../../../wa-quizolai-shared/interface/question.interface.d';
+import { IQuestionAnswer } from '@quizolai-shared/interface/question.interface';
 import { Schema, model } from 'mongoose';
 import { customAlphabet } from 'nanoid';
 import log from '../util/logger';
 import { addTranslationsToQuestion, getProfanityRating } from '../service/question.service';
-import { IQuestion, IInputQuestion } from "../../../wa-quizolai-shared";
+import { IQuestion, IInputQuestion } from "@quizolai-shared/interface/question.interface";
 
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz0123456789", 10);
 
@@ -34,6 +34,7 @@ export class InputQuestion implements IInputQuestion {
 const questionSchema = new Schema<IQuestion>(
     {
         questionID: { type: String, required: true, unique: true, default: () => `question_${nanoid()}` },
+        userID: { type: String, required: true },
         author: { type: String, required: true },
         question: { type: String, required: true },
         tags: { type: [String], required: true },
