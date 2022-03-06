@@ -32,3 +32,17 @@ table {
 .my-mat-header-cell {
   @apply text-zinc-100;
 }
+
+.mat-cell  {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 200px;
+
+}
+
+
+.table-container {
+  overflow-x: auto !important;
+
+}

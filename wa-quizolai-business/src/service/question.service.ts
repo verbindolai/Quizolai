@@ -8,6 +8,8 @@ export async function getProfanityRating(text: string): Promise<string> {
     const url = config.get<string>('openaiFilterURL');
     const auth = config.get<string>('openaiAUTH');
 
+    log.debug(`Calling openai filter with url: ${url}`);
+
     try {
         const response = await axios({
             method: 'post',
@@ -41,7 +43,7 @@ export async function addTranslationsToQuestion(question: IQuestion) {
 
     const queryString = `${url}?text=${question.question}&target_lang=EN&auth_key=${auth}`;
 
-    log.debug("Query: " + queryString)
+    log.debug(`Calling deepl with url: ${queryString}`);
 
     try {
         const response = await axios.get(queryString);

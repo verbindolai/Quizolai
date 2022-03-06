@@ -10,18 +10,24 @@ export const checkJwt = auth({
 
 });
 
+export const PERMISSONS = {
+    Q_READ : 'read:questions',
+    Q_SAFE_READ : 'read:safequestions',
+    Q_ADD : 'add:questions',
+    Q_EDIT : 'edit:questions',
+}
+
 
 export function checkPermissions(permission: string[]) {
-
-
     return (req: Request, res: Response, next: NextFunction) => {
         if (req.auth) {
             const foundPermissions = req.auth.payload.permissions as string[];
-            log.debug(`foundPermissions: ${foundPermissions}`);
+            console.log(foundPermissions);
             if (foundPermissions)
                 if (includeAll(permission, foundPermissions)) {
                     next();
                 } else {
+                    log.warn(`User ${req.auth.payload.sub} has no permission ${permission}`);
                     res.sendStatus(403)
 
                 }
@@ -30,9 +36,26 @@ export function checkPermissions(permission: string[]) {
 }
 
 
-export function checkUserID(req: Request, res: Response, next: NextFunction) {
-    if(!req.auth || !req.auth.payload.sub){
-        res.sendStatus(400);
+// export function checkUserID(req: Request, res: Response, next: NextFunction) {
+//     if(!req.auth || !req.auth.payload.sub){
+//         res.sendStatus(400);
+//     }
+//     next();
+// }
+
+export function checkUserID(matchCheck?: boolean) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        if(!req.auth || !req.auth.payload.sub){
+            log.warn(`Missing user id`);
+            res.sendStatus(400);
+        } else {
+            if(matchCheck && req.auth.payload.sub !== req.params.userId) {
+                log.warn(`User ${req.auth.payload.sub} tried to access user ${req.params.userId}`);
+                res.sendStatus(403);
+            } else {
+                next();
+            }
+        }
     }
-    next();
 }
+

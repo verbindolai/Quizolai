@@ -16,7 +16,12 @@ export class QuestionService {
     return this.http.get('http://localhost:50000/api/questions') as Observable<IQuestion[]>;
   }
 
+  getQuestionsFromUser(userId: string): Observable<IQuestion[]> {
+    return this.http.get('http://localhost:50000/api/questions/user/' + userId) as Observable<IQuestion[]>;
+  }
+
   deleteQuestion(id: string) {
+    console.log("deleteQuestion");
     return this.http.delete('http://localhost:50000/api/question/' + id) as Observable<IQuestion>;
   }
 
@@ -30,5 +35,6 @@ export class QuestionService {
   updateQuestion(id: string, question: IQuestionFormInput) {
     return this.http.put('http://localhost:50000/api/question/' + id, question) as Observable<IQuestion>;
   }
+
 
 }

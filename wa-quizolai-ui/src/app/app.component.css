@@ -1,0 +1,9 @@
+mat-sidenav-container {
+  height: 100% !important;
+  background-color: transparent;
+}
+
+mat-sidenav {
+  @apply p-5;
+  /*background-color: #673AB7 !important;*/
+}

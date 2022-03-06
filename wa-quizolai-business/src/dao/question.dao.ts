@@ -2,6 +2,7 @@ import { Question } from '../models/question.model';
 import { IQuestion, IInputQuestion } from "../../../wa-quizolai-shared";
 import { StatusCodeError } from '../util/exceptions/exceptions';
 import {hasPermission} from "../service/auth.service";
+import {PERMISSONS} from "../middleware/auth.mw";
 
 const questionDao = {
     async saveQuestion(inputQuestion: IInputQuestion, userID : string): Promise<IQuestion> {
@@ -25,7 +26,8 @@ const questionDao = {
         if (!question) {
             throw new StatusCodeError( 'Question not found', 404);
         }
-        if (question.userID !== userID && !hasPermission(["edit:question"], permissions)) {
+        if (question.userID !== userID && !hasPermission([PERMISSONS.Q_EDIT], permissions)) {
+            console.log(permissions)
             throw new StatusCodeError(`You don't have permission to delete this question`, 403);
         }
         question = await Question.findOneAndDelete({ _id: id });
@@ -50,7 +52,7 @@ const questionDao = {
         if (!question) {
             throw new StatusCodeError(`Question with id ${id} not found`, 404);
         }
-        if (question.userID !== userID && !hasPermission(["edit:question"], permissions)) {
+        if (question.userID !== userID && !hasPermission([PERMISSONS.Q_EDIT], permissions)) {
             throw new StatusCodeError(`You don't have permission to edit this question`, 403);
         }
 
@@ -67,7 +69,12 @@ const questionDao = {
 
     async getQuestions(): Promise<IQuestion[]> {
         return Question.find({}, {}, { lean: true });
-    }
+    },
+
+    async getQuestionsByUser(userID : string): Promise<IQuestion[]> {
+        return Question.find({ userID: userID }, {}, { lean: true });
+    },
+
 };
 
 export default questionDao;

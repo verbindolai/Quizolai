@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {QuestionService} from 'src/app/service/question.service';
 import {IQuestion} from "../../../../../wa-quizolai-shared"
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -8,6 +8,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {AuthService} from "@auth0/auth0-angular";
 import jwt_decode from 'jwt-decode';
 import {UserService} from "../../service/user.service";
+import {UserQuestionsComponent} from "../user-questions/user-questions.component";
+import {QuestionDetailDialogComponent} from "../question-detail-dialog/question-detail-dialog.component";
 
 @Component({
   selector: 'app-question-display',
@@ -16,33 +18,42 @@ import {UserService} from "../../service/user.service";
 })
 export class QuestionDisplayComponent implements OnInit {
 
-  displayedColumns: string[] = ['author', 'question', 'answers', 'category', 'tags', 'difficulty', 'date', 'actions'];
-  dataSource: IQuestion[] = [];
-  dataLoading = false;
+  displayedColumns: string[] = ['author', 'question', 'category', 'difficulty','actions', 'info'];
+  @Input() dataSource: IQuestion[] = [];
+  filterSelectObj : any [] = [];
+  @Input() dataLoading = false;
   canEdit = false;
 
   constructor(private questionService: QuestionService, private _snackBar: MatSnackBar, public dialog: MatDialog, public auth : AuthService, public userService : UserService) {
+    this.filterSelectObj = [
+      {
+        name: 'ID',
+        columnProp: 'id',
+        options: []
+      }, {
+        name: 'NAME',
+        columnProp: 'name',
+        options: []
+      }, {
+        name: 'USERNAME',
+        columnProp: 'username',
+        options: []
+      }, {
+        name: 'EMAIL',
+        columnProp: 'email',
+        options: []
+      }, {
+        name: 'STATUS',
+        columnProp: 'status',
+        options: []
+      }
+    ]
+
   }
 
   getStringsFromQuestionAnswerArray = QuestionDisplayComponent.getStringsFromQuestionAnswerArray;
 
   ngOnInit(): void {
-    this.dataLoading = true;
-
-    this.questionService.getQuestions().subscribe({
-       next: (questions: IQuestion[]) => {
-         this.dataSource = questions;
-       },
-      error: (err) => {
-        this.dataLoading = false;
-        this._snackBar.open("Error loading questions", "Close", {
-          duration: 2000,
-        });
-      },
-      complete: () => {
-        this.dataLoading = false;
-      }
-     });
     this.userService.canEdit().then((canEdit) => {
       this.canEdit = canEdit;
     });
@@ -105,6 +116,11 @@ export class QuestionDisplayComponent implements OnInit {
 
   }
 
+  openInfoDialog(question : any) {
+    this.dialog.open(QuestionDetailDialogComponent, {
+      data: question
+    });
+  }
 
   editQuestion(question: IQuestion) {
     this.openDialog(AddQuestionDialogComponent.getQuestionFormInputFromIQuestion(question));
@@ -114,4 +130,11 @@ export class QuestionDisplayComponent implements OnInit {
     return answers.map(answer => answer.answer);
   }
 
+  filterChange(filter: any, $event: Event) {
+
+  }
+
+  resetFilters() {
+
+  }
 }

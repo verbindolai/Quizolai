@@ -2,11 +2,11 @@ import { object, number, string, array, TypeOf, boolean } from "zod";
 
 export const questionSchema = object({
     author: string({
-        required_error: "Full name is required",
-    }),
+        required_error: "Author is required",
+    }).nonempty("Author cant be empty."),
     question: string({
         required_error: "Question is required",
-    }),
+    }).nonempty("Question cant be empty."),
     tags: array(string(), {
         required_error: "Tags are required",
     }),
@@ -50,6 +50,15 @@ export const deleteQuestionSchema = object({
 });
 
 
+export const getQuestionsFromUserSchema = object({
+    params: object({
+        userId: string({
+            required_error: "User Id is required",
+        }),
+    }),
+});
+
+
 export const getQuestionSchema = deleteQuestionSchema;
 
 export type DeleteQuestionSchema = TypeOf<typeof deleteQuestionSchema>;
@@ -57,3 +66,5 @@ export type DeleteQuestionSchema = TypeOf<typeof deleteQuestionSchema>;
 export type QuestionSchema = TypeOf<typeof questionBodySchema>;
 
 export type GetQuestionSchema = TypeOf<typeof getQuestionSchema>;
+
+export type GetQuestionsFromUserSchema = TypeOf<typeof getQuestionsFromUserSchema>;

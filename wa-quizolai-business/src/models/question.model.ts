@@ -29,6 +29,9 @@ export class InputQuestion implements IInputQuestion {
         return new InputQuestion(obj.author, obj.question, obj.tags, obj.answers, obj.category, obj.difficulty);
     }
 
+    toString(): string {
+        return `{Author: ${this.author} - Question:${this.question} - Tags:${this.tags} - Answers:${this.answers} - Category:${this.category} - Difficulty:${this.difficulty}}`;
+    }
 }
 
 const questionSchema = new Schema<IQuestion>(

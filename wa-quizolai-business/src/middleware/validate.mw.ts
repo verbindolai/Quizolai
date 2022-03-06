@@ -10,7 +10,7 @@ export const zodValidate = (schema: AnyZodObject) => (req: Request, res: Respons
             query: req.query,
             params: req.params,
         });
-        log.debug('Request is valid.');
+        log.debug('Request has valid schema.');
         next();
     } catch (e: any) {
         return res.status(400).send(e.errors);

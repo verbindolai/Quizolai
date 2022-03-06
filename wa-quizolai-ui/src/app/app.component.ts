@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
+import {MatSidenav} from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-root',
@@ -8,9 +9,12 @@ import {AuthService} from "@auth0/auth0-angular";
 })
 export class AppComponent implements OnInit {
 
+  //@ViewChild('sidenav') sidenav!: MatSidenav;
+
   constructor(public auth: AuthService) { }
 
   ngOnInit(): void {
   }
+
 
 }

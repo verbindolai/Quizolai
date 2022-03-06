@@ -3,16 +3,17 @@ import { QuestionDisplayComponent } from './components/question-display/question
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {AuthGuard} from "@auth0/auth0-angular";
+import {OverviewComponent} from "./components/overview/overview.component";
 
 const routes: Routes = [
 
   {
     path: '',
-    component: QuestionDisplayComponent
+    component: OverviewComponent
   },
   {
     path: 'questions',
-    component: QuestionDisplayComponent
+    component: OverviewComponent
   },
   {
     path: 'add',

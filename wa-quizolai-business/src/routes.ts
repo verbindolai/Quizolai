@@ -8,7 +8,7 @@ import {
     deleteQuestionSchema,
     getQuestionSchema,
     questionBodySchema,
-    questionArrayBodySchema
+    questionArrayBodySchema, getQuestionsFromUserSchema
 } from './zod-schemas/question.zod-schema';
 import * as auth from './middleware/auth.mw';
 
@@ -19,11 +19,12 @@ function routes(app: Express) {
         res.sendStatus(200).send("pong");
     });
 
-    app.post('/api/question', [auth.checkJwt, auth.checkPermissions(["add:questions"]), auth.checkUserID, zodValidate(questionBodySchema)], async (req: Request, res: Response) => {
+    app.post('/api/question', [auth.checkJwt, auth.checkPermissions(["add:questions"]), auth.checkUserID(), zodValidate(questionBodySchema)], async (req: Request, res: Response) => {
         try {
             const question = InputQuestion.fromObject(req.body);
             const userID = req.auth?.payload.sub as string;
-            log.debug(question, userID);
+            log.debug("Adding Question from User:" + userID);
+            console.log(question);
             const savedQuestion = await questionDao.saveQuestion(question, userID);
             res.status(200).send(savedQuestion);
         } catch (err) {
@@ -32,13 +33,13 @@ function routes(app: Express) {
     });
 
     //Array of questions
-    app.post('/api/questions', [auth.checkJwt, auth.checkPermissions(["add:questions"]), auth.checkUserID, zodValidate(questionArrayBodySchema)], async (req: Request, res: Response) => {
+    app.post('/api/questions', [auth.checkJwt, auth.checkPermissions(["add:questions"]), auth.checkUserID(), zodValidate(questionArrayBodySchema)], async (req: Request, res: Response) => {
         try {
             const permissions = req.auth?.payload.permissions as string[];
-            log.info(permissions)
             const questions: InputQuestion[] = req.body.map(InputQuestion.fromObject)
             const userID = req.auth?.payload.sub as string;
-            log.debug(questions, userID);
+            log.debug("Adding Questions from User:" + userID);
+            console.log(questions);
             const savedQuestions = await questionDao.saveQuestions(questions, userID);
             res.status(200).send(savedQuestions);
         } catch (err) {
@@ -50,16 +51,33 @@ function routes(app: Express) {
     app.get('/api/question/:id', [zodValidate(getQuestionSchema), checkObjectID], async (req: Request, res: Response) => {
         try {
             const question = await questionDao.getQuestion(req.params.id);
+            log.debug("Getting Question with id " + req.params.id);
+            console.log(question)
             res.status(200).send(question);
         } catch (err) {
             handleError(err, req, res, null);
         }
     });
 
+    //route to get all questions from a specific user
+    app.get('/api/questions/user/:userId', [zodValidate(getQuestionsFromUserSchema), auth.checkJwt, auth.checkPermissions(["read:questions"]), auth.checkUserID(true)], async (req: Request, res: Response) => {
+        try {
+            const userID = req.params.userId;
+            const questions = await questionDao.getQuestionsByUser(userID);
+            log.debug("Getting Questions from User:" + userID);
+            console.log(questions);
+            res.status(200).send(questions);
+        } catch (err) {
+            handleError(err, req, res, null);
+        }
+    });
+
+
     //route to get all questions with profanity rating 0 , allowSafeQuestionRead
     app.get('/api/questions', [], async (req: Request, res: Response) => {
         try {
             const questions = await questionDao.getSaveQuestions();
+            log.debug("Getting Questions.");
             res.status(200).send(questions);
         } catch (err) {
             handleError(err, req, res, null);
@@ -75,14 +93,13 @@ function routes(app: Express) {
     //     }
     // });
 
-    app.put('/api/question/:id', [auth.checkJwt, auth.checkUserID, zodValidate(questionBodySchema), checkObjectID], async (req: Request, res: Response) => {
+    app.put('/api/question/:id', [auth.checkJwt, auth.checkUserID(), zodValidate(questionBodySchema), checkObjectID], async (req: Request, res: Response) => {
         try {
             const inputQuestion = InputQuestion.fromObject(req.body);
             const id = req.params.id;
             const userID = req.auth?.payload.sub as string;
             const permissions = req.auth?.payload.permissions as string[];
-            log.debug(id, userID, permissions);
-
+            log.debug("Updating Questions with ID: "+ id + " from User: " + userID + ". Permissions: " + permissions);
             const question = await questionDao.updateQuestion(id, inputQuestion, userID, permissions);
             res.status(200).send(question);
         } catch (err) {
@@ -90,13 +107,12 @@ function routes(app: Express) {
         }
     });
 
-    app.delete('/api/question/:id',  [auth.checkJwt, auth.checkUserID, zodValidate(deleteQuestionSchema), checkObjectID], async (req: Request, res: Response) => {
+    app.delete('/api/question/:id',  [auth.checkJwt, auth.checkUserID(), zodValidate(deleteQuestionSchema), checkObjectID], async (req: Request, res: Response) => {
         try {
-
             const id = req.params.id;
             const userID = req.auth?.payload.sub as string;
             const permissions = req.auth?.payload.permissions as string[];
-            log.debug(id, userID, permissions);
+            log.debug("Deleting Questions with ID: "+ id + " from User: " + userID + ". Permissions: " + permissions);
 
             const deletedQuestion = await questionDao.deleteQuestion(id, userID, permissions);
             res.status(200).send(deletedQuestion);
