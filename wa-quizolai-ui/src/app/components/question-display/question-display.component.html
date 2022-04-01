@@ -2,23 +2,24 @@
   <mat-expansion-panel-header >
     <mat-panel-title class="text-zinc-100 text-xs">Filter Questions</mat-panel-title>
   </mat-expansion-panel-header>
-  <div class="py-4">
-    <mat-form-field *ngFor="let filter of filterSelectObj">
-      <mat-label class="text-zinc-100">Filter {{filter.name}}</mat-label>
-      <select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
-              (change)="filterChange(filter, $event)" class="bg-zinc-800">
-        <option value="" class="bg-zinc-800" >-- Select {{filter.name}} --</option>
-        <option [value]="item" *ngFor="let item of filter.options" class="bg-zinc-800">{{item}}</option>
-      </select>
+  <div class="py-4 text-zinc-100">
+    <mat-form-field class="ml-4">
+      <input matInput placeholder="Question..." [(ngModel)]="questionFilterString" (ngModelChange)="applyFilter()">
     </mat-form-field>
-    &nbsp;
-    <button mat-flat-button color="warn" (click)="resetFilters()">Reset</button>
+    <mat-form-field class="ml-4">
+      <input matInput placeholder="Author..." [(ngModel)]="authorFilterString" (ngModelChange)="applyFilter()">
+    </mat-form-field>
+    <mat-form-field class="ml-4">
+      <input matInput placeholder="Category..." [(ngModel)]="categoryFilterString" (ngModelChange)="applyFilter()">
+    </mat-form-field>
+
+    <button (click)="resetFilters()" mat-raised-button color="primary" class="ml-4">Reset</button>
   </div>
 </mat-expansion-panel>
 <div class="table-container">
 
 
-  <table id="question-table" mat-table [dataSource]="dataSource" class="mat-elevation-z8 bg-zinc-800">
+  <table #questionTable id="question-table" mat-table [dataSource]="dataSource" class="mat-elevation-z8 bg-zinc-800">
 
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->

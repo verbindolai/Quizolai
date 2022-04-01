@@ -46,3 +46,13 @@ table {
   overflow-x: auto !important;
 
 }
+/* input color class */
+input.mat-input-element {
+  @apply text-zinc-100;
+}
+
+.mat-form-field-empty.mat-form-field-label {
+  @apply text-zinc-100;
+}
+
+

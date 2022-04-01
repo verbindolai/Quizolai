@@ -24,7 +24,6 @@ function routes(app: Express) {
             const question = InputQuestion.fromObject(req.body);
             const userID = req.auth?.payload.sub as string;
             log.debug("Adding Question from User:" + userID);
-            console.log(question);
             const savedQuestion = await questionDao.saveQuestion(question, userID);
             res.status(200).send(savedQuestion);
         } catch (err) {
@@ -39,7 +38,6 @@ function routes(app: Express) {
             const questions: InputQuestion[] = req.body.map(InputQuestion.fromObject)
             const userID = req.auth?.payload.sub as string;
             log.debug("Adding Questions from User:" + userID);
-            console.log(questions);
             const savedQuestions = await questionDao.saveQuestions(questions, userID);
             res.status(200).send(savedQuestions);
         } catch (err) {
@@ -52,7 +50,6 @@ function routes(app: Express) {
         try {
             const question = await questionDao.getQuestion(req.params.id);
             log.debug("Getting Question with id " + req.params.id);
-            console.log(question)
             res.status(200).send(question);
         } catch (err) {
             handleError(err, req, res, null);
@@ -65,7 +62,6 @@ function routes(app: Express) {
             const userID = req.params.userId;
             const questions = await questionDao.getQuestionsByUser(userID);
             log.debug("Getting Questions from User:" + userID);
-            console.log(questions);
             res.status(200).send(questions);
         } catch (err) {
             handleError(err, req, res, null);
@@ -77,6 +73,7 @@ function routes(app: Express) {
     app.get('/api/questions', [], async (req: Request, res: Response) => {
         try {
             const questions = await questionDao.getSaveQuestions();
+          console.log(questions);
             log.debug("Getting Questions.");
             res.status(200).send(questions);
         } catch (err) {

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {QuestionService} from 'src/app/service/question.service';
 import {IQuestion} from "../../../../../wa-quizolai-shared"
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -6,10 +6,10 @@ import {AddQuestionDialogComponent} from "../add-question-dialog/add-question-di
 import {IQuestionFormInput} from "../question-form/question-form.component";
 import {MatDialog} from "@angular/material/dialog";
 import {AuthService} from "@auth0/auth0-angular";
-import jwt_decode from 'jwt-decode';
 import {UserService} from "../../service/user.service";
-import {UserQuestionsComponent} from "../user-questions/user-questions.component";
 import {QuestionDetailDialogComponent} from "../question-detail-dialog/question-detail-dialog.component";
+import {MatTable} from "@angular/material/table";
+
 
 @Component({
   selector: 'app-question-display',
@@ -18,36 +18,24 @@ import {QuestionDetailDialogComponent} from "../question-detail-dialog/question-
 })
 export class QuestionDisplayComponent implements OnInit {
 
-  displayedColumns: string[] = ['author', 'question', 'category', 'difficulty','actions', 'info'];
+  displayedColumns: string[] = ['author', 'question', 'category', 'difficulty', 'actions', 'info'];
+
+  @ViewChild('questionTable') questionTable!: MatTable<IQuestion>;
+
   @Input() dataSource: IQuestion[] = [];
-  filterSelectObj : any [] = [];
   @Input() dataLoading = false;
   canEdit = false;
 
-  constructor(private questionService: QuestionService, private _snackBar: MatSnackBar, public dialog: MatDialog, public auth : AuthService, public userService : UserService) {
-    this.filterSelectObj = [
-      {
-        name: 'ID',
-        columnProp: 'id',
-        options: []
-      }, {
-        name: 'NAME',
-        columnProp: 'name',
-        options: []
-      }, {
-        name: 'USERNAME',
-        columnProp: 'username',
-        options: []
-      }, {
-        name: 'EMAIL',
-        columnProp: 'email',
-        options: []
-      }, {
-        name: 'STATUS',
-        columnProp: 'status',
-        options: []
-      }
-    ]
+
+  categoryFilterString: string = "";
+  authorFilterString: string = "";
+  questionFilterString: string = "";
+
+  filteredData: IQuestion[] = [];
+
+
+  constructor(private questionService: QuestionService, private _snackBar: MatSnackBar, public dialog: MatDialog, public auth: AuthService, public userService: UserService) {
+
 
   }
 
@@ -116,7 +104,7 @@ export class QuestionDisplayComponent implements OnInit {
 
   }
 
-  openInfoDialog(question : any) {
+  openInfoDialog(question: any) {
     this.dialog.open(QuestionDetailDialogComponent, {
       data: question
     });
@@ -130,11 +118,39 @@ export class QuestionDisplayComponent implements OnInit {
     return answers.map(answer => answer.answer);
   }
 
-  filterChange(filter: any, $event: Event) {
-
+  resetFilters() {
+    this.questionTable.dataSource = this.dataSource;
+    this.categoryFilterString = "";
+    this.authorFilterString = "";
+    this.questionFilterString = "";
   }
 
-  resetFilters() {
+  applyFilter() {
+    console.log(this.categoryFilterString);
+    this.filteredData = this.dataSource.filter((question) => {
 
+      if (this.categoryFilterString) {
+        if (question.category.toLowerCase().indexOf(this.categoryFilterString.toLowerCase()) === -1) {
+          console.log("Category filter failed");
+          return false;
+        }
+      }
+
+      if (this.authorFilterString) {
+        if (question.author.toLowerCase().indexOf(this.authorFilterString.toLowerCase()) === -1) {
+          return false;
+        }
+      }
+
+      if (this.questionFilterString) {
+        if (question.question.toLowerCase().indexOf(this.questionFilterString.toLowerCase()) === -1) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    this.questionTable.dataSource = this.filteredData;
   }
 }

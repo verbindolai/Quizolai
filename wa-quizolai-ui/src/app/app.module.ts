@@ -34,6 +34,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import { OverviewComponent } from './components/overview/overview.component';
 import { UserQuestionsComponent } from './components/user-questions/user-questions.component';
 import { QuestionDetailDialogComponent } from './components/question-detail-dialog/question-detail-dialog.component';
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -91,13 +92,14 @@ import { QuestionDetailDialogComponent } from './components/question-detail-dial
                         httpMethod: 'PUT'
                     },
                     {
-                      uri: `${env.dev.serverUrl}/api/questions/user/*`,
-                      httpMethod: 'GET'
+                        uri: `${env.dev.serverUrl}/api/questions/user/*`,
+                        httpMethod: 'GET'
                     }
                 ]
             }
         }),
         MatExpansionModule,
+        MatSelectModule,
 
     ],
   providers: [
