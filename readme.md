@@ -5,4 +5,4 @@ Quizolai is a RESTful API for quiz questions.
 
 ## Technical
 An Express Backend, written in Typescript and Node.js, with a MongoDB database. 
-The Frontend is written in Angular, using the [Angular Material](https://material.angular.io/) library.
+The Frontend is written in Angular, using the [Angular Material](https://material.angular.io/) library. User authentication handled via [auth0](https://auth0.com/).
