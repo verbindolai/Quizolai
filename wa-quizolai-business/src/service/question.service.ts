@@ -1,7 +1,74 @@
-import { IQuestion } from "../../../wa-quizolai-shared";
+import {IInputQuestion, IQuestion} from "../../../wa-quizolai-shared";
 import axios from 'axios';
 import config from 'config';
 import log from '../util/logger';
+import {Question} from "../models/question.model";
+import {StatusCodeError} from "../util/exceptions/exceptions";
+import {hasPermission} from "./auth.service";
+import {PERMISSONS} from "../middleware/auth.mw";
+
+const QuestionService = {
+    async saveQuestion(inputQuestion: IInputQuestion, userID : string): Promise<IQuestion> {
+        const nq = new Question(inputQuestion);
+        nq.userID = userID;
+        return await nq.save();
+    },
+
+
+
+    async deleteQuestion(id: string, userID : string, permissions : string[]): Promise<IQuestion> {
+
+        let question = await Question.findOne({ _id: id });
+        if (!question) {
+            throw new StatusCodeError( 'Question not found', 404);
+        }
+        if (question.userID !== userID && !hasPermission([PERMISSONS.Q_EDIT], permissions)) {
+            console.log(permissions)
+            throw new StatusCodeError(`You don't have permission to delete this question`, 403);
+        }
+        question = await Question.findOneAndDelete({ _id: id });
+
+        if (!question) {
+            throw new StatusCodeError(`Question with id ${id} not found`, 404);
+        }
+        return question;
+    },
+
+    async getQuestion(id: string): Promise<IQuestion> {
+        const question = await Question.findOne({ _id: id }, {}, { lean: true });
+        if (!question) {
+            throw new StatusCodeError(`Question with id ${id} not found`, 404);
+        }
+        return question;
+    },
+
+    async updateQuestion(id: string, inputQuestion: IInputQuestion, userID : string, permissions : string[]): Promise<IQuestion> {
+        const question = await Question.findOne({ _id: id });
+
+        if (!question) {
+            throw new StatusCodeError(`Question with id ${id} not found`, 404);
+        }
+        if (question.userID !== userID && !hasPermission([PERMISSONS.Q_EDIT], permissions)) {
+            throw new StatusCodeError(`You don't have permission to edit this question`, 403);
+        }
+
+        const updatedQuestion = await Question.findOneAndUpdate({ _id: id }, inputQuestion, { new: true, upsert: false });
+        if (!updatedQuestion) {
+            throw new StatusCodeError(`Question with id ${id} not found`, 404);
+        }
+        return updatedQuestion;
+    },
+
+
+
+    async getRandomQuestion() {
+        const estimatedCount = await Question.estimatedDocumentCount();
+        const random = Math.floor(Math.random() * estimatedCount);
+        return Question.findOne({}, {}, { lean: true, skip: random });
+    }
+}
+
+export default QuestionService;
 
 export async function getProfanityRating(text: string): Promise<string> {
 

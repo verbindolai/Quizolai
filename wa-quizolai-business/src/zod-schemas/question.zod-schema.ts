@@ -1,4 +1,6 @@
-import { object, number, string, array, TypeOf, boolean } from "zod";
+import {object, number, string, array, TypeOf, boolean} from "zod";
+import * as z from "zod";
+import {Schema, Types} from "mongoose";
 
 export const questionSchema = object({
     author: string({
@@ -43,11 +45,11 @@ export const questionArrayBodySchema = object({
 
 export const deleteQuestionSchema = object({
     params: object({
-        id: string({
-            required_error: "Question ID is required",
-        }),
+        id: z.string({required_error : "Question-Id is required."}).refine((id) => Types.ObjectId.isValid(id), "Given Question-Id is not valid."),
     }),
 });
+
+
 
 
 export const getQuestionsFromUserSchema = object({

@@ -36,26 +36,25 @@ export function checkPermissions(permission: string[]) {
 }
 
 
-// export function checkUserID(req: Request, res: Response, next: NextFunction) {
-//     if(!req.auth || !req.auth.payload.sub){
-//         res.sendStatus(400);
-//     }
-//     next();
-// }
-
-export function checkUserID(matchCheck?: boolean) {
-    return (req: Request, res: Response, next: NextFunction) => {
-        if(!req.auth || !req.auth.payload.sub){
-            log.warn(`Missing user id`);
-            res.sendStatus(400);
-        } else {
-            if(matchCheck && req.auth.payload.sub !== req.params.userId) {
-                log.warn(`User ${req.auth.payload.sub} tried to access user ${req.params.userId}`);
-                res.sendStatus(403);
-            } else {
-                next();
-            }
-        }
+export function checkExistingUserId(req: Request, res: Response, next: NextFunction) {
+    if(!req.auth || !req.auth.payload.sub){
+        log.warn(`Missing user id`);
+        res.sendStatus(400);
+    } else {
+        next();
     }
 }
+
+export function checkUserIDMatch(req: Request, res: Response, next: NextFunction) {
+    checkExistingUserId(req, res, () => {
+        if(req.auth?.payload.sub === req.params.userId){
+            next();
+        } else {
+            log.warn(`User ${req.auth?.payload.sub} tried to access user ${req.params.userId}`);
+            res.sendStatus(403);
+        }
+    });
+}
+
+
 
