@@ -37,6 +37,24 @@ const QuestionsController = {
         } catch (err) {
             handleError(err, req, res, null);
         }
+    },
+    async getRandom(req: Request, res: Response) {
+        try {
+
+            const count = parseInt(req.params.count);
+            const questions = await QuestionsService.getRandomQuestions(count);
+            res.status(200).send(questions);
+        } catch (err) {
+            handleError(err, req, res, null);
+        }
+    },
+    async getCSV(req: Request, res: Response) {
+        const questions: InputQuestion[] = req.body.map(InputQuestion.fromObject)
+        const csv = await QuestionsService.getCSV(questions);
+        log.debug(csv);
+        res.attachment('questions.csv');
+        res.type('text/csv');
+        res.status(200).send(csv);
     }
 }
 

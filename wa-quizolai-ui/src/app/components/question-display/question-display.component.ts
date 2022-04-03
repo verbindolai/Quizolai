@@ -9,6 +9,7 @@ import {AuthService} from "@auth0/auth0-angular";
 import {UserService} from "../../service/user.service";
 import {QuestionDetailDialogComponent} from "../question-detail-dialog/question-detail-dialog.component";
 import {MatTable} from "@angular/material/table";
+import {lastValueFrom} from "rxjs";
 
 
 @Component({
@@ -153,4 +154,22 @@ export class QuestionDisplayComponent implements OnInit {
 
     this.questionTable.dataSource = this.filteredData;
   }
+
+  downloadAsCSV() {
+    lastValueFrom(this.questionService.downloadCSV(this.dataSource)).then((res) => {
+      saveAs(res.body as string, "questions.csv");
+    });
+  }
+}
+
+function saveAs( csv: string, filename: string ) {
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.setAttribute('hidden', '');
+  a.setAttribute('href', url);
+  a.setAttribute('download', filename);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }

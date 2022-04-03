@@ -25,8 +25,14 @@ export class InputQuestion implements IInputQuestion {
         this.difficulty = difficulty;
     }
 
-    static fromObject(obj: IInputQuestion): InputQuestion {
-        return new InputQuestion(obj.author, obj.question, obj.tags, obj.answers, obj.category, obj.difficulty);
+    static fromObject(obj: any): InputQuestion {
+        const answers = obj.answers.map((answer: IQuestionAnswer) => {
+            return {
+                answer: answer.answer,
+                correct: answer.correct,
+            }
+        });
+        return new InputQuestion(obj.author, obj.question, obj.tags, answers, obj.category, obj.difficulty);
     }
 
     toString(): string {

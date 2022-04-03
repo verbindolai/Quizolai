@@ -1,6 +1,6 @@
 import QuestionController from "../controller/question.controller";
 import express from "express";
-import QuestionMiddleware from "../middleware/question.mw";
+import QuestionMiddleware from "../middleware/question.middleware";
 
 
 const router = express.Router();

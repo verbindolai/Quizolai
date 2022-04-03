@@ -1,4 +1,4 @@
-import {object, number, string, array, TypeOf, boolean} from "zod";
+import {object, number, string, array, TypeOf, boolean, preprocess} from "zod";
 import * as z from "zod";
 import {Schema, Types} from "mongoose";
 
@@ -45,7 +45,7 @@ export const questionArrayBodySchema = object({
 
 export const deleteQuestionSchema = object({
     params: object({
-        id: z.string({required_error : "Question-Id is required."}).refine((id) => Types.ObjectId.isValid(id), "Given Question-Id is not valid."),
+        id: string({required_error : "Question-Id is required."}).refine((id) => Types.ObjectId.isValid(id), "Given Question-Id is not valid."),
     }),
 });
 
@@ -60,6 +60,15 @@ export const getQuestionsFromUserSchema = object({
     }),
 });
 
+
+export const getRandomQuestionsSchema = object({
+    params: object({
+       count: preprocess((count) => parseInt(string().parse(count)), number({
+           invalid_type_error: "Not a valid number.",
+           required_error: "Number of questions is required.",
+       }).int().positive().lte(50)),
+    })
+})
 
 export const getQuestionSchema = deleteQuestionSchema;
 

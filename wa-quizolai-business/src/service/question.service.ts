@@ -5,7 +5,7 @@ import log from '../util/logger';
 import {Question} from "../models/question.model";
 import {StatusCodeError} from "../util/exceptions/exceptions";
 import {hasPermission} from "./auth.service";
-import {PERMISSONS} from "../middleware/auth.mw";
+import {PERMISSONS} from "../middleware/auth.middleware";
 
 const QuestionService = {
     async saveQuestion(inputQuestion: IInputQuestion, userID : string): Promise<IQuestion> {

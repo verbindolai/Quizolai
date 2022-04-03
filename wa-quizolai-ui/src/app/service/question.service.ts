@@ -26,7 +26,9 @@ export class QuestionService {
     return this.http.post('http://localhost:50000/api/questions', questions) as Observable<IQuestion[]>;
   }
 
-
+  downloadCSV(questions: IQuestion[]) {
+    return this.http.post('http://localhost:50000/api/questions/getcsv', questions, {observe: "response", responseType: 'blob' as 'json'});
+  }
 
 
   //Question

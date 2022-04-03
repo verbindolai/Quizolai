@@ -1,10 +1,10 @@
-import {checkExistingUserId, checkJwt, checkPermissions, PERMISSONS} from "./auth.mw";
-import {zodValidate} from "./validate.mw";
+import {checkExistingUserId, checkJwt, checkPermissions, PERMISSONS} from "./auth.middleware";
+import {zodValidate} from "./validate.middleware";
 import {
     deleteQuestionSchema,
     getQuestionSchema,
     questionBodySchema
-} from "../zod-schemas/question.zod-schema";
+} from "../zod-schemas/question.zod";
 
 
 const QuestionMiddleware = {
