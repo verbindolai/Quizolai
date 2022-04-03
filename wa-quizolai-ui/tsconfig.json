@@ -18,6 +18,12 @@
     "importHelpers": true,
     "target": "es2017",
     "module": "es2020",
+    "resolveJsonModule": true,
+    "paths": {
+      "@quizolai-shared/*": [
+        "../wa-quizolai-shared/*"
+      ]
+    },
     "lib": [
       "es2020",
       "dom"
@@ -28,5 +34,10 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [
+    {
+      "path": "../wa-quizolai-shared"
+    }
+  ]
 }

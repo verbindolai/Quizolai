@@ -1,1 +1,58 @@
 /* You can add global styles to this file, and also import other style files */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  @apply bg-zinc-800;
+}
+
+.mat-progress-spinner circle, .mat-spinner circle {
+  @apply stroke-zinc-100;
+}
+
+mat-dialog-container {
+  /*@apply bg-zinc-800 !important;*/
+  /*@apply text-zinc-100 !important;*/
+}
+
+table {
+  width: 100%;
+}
+
+.mat-cell,
+.mat-header-cell,
+.my-mat-cell,
+.my-mat-header-cell {
+  @apply text-zinc-100;
+}
+
+.mat-cell  {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 200px;
+
+}
+
+
+.table-container {
+  overflow-x: auto !important;
+
+}
+/* input color class */
+input.mat-input-element {
+  @apply text-zinc-100;
+}
+
+.mat-form-field-empty.mat-form-field-label {
+  @apply text-zinc-100;
+}
+
+

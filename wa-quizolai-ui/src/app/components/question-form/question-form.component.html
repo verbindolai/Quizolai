@@ -1,0 +1,76 @@
+<div *ngIf="auth.user$ | async as user">
+
+
+  <table id="question-table" mat-table [dataSource]="addedQuestions" class="mat-elevation-z8 bg-zinc-800">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+
+    <ng-container matColumnDef="author">
+      <th mat-header-cell *matHeaderCellDef> Author</th>
+      <td mat-cell *matCellDef="let element"> {{element.author}} </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="question">
+      <th mat-header-cell *matHeaderCellDef> Question</th>
+      <td mat-cell *matCellDef="let element"> {{element.question}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="answers">
+      <th mat-header-cell *matHeaderCellDef> Answers</th>
+      <td mat-cell *matCellDef="let element"> {{getStringsFromQuestionAnswerArray(element.answers)}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef> Category</th>
+      <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="tags">
+      <th mat-header-cell *matHeaderCellDef> Tags</th>
+      <td mat-cell *matCellDef="let element"> {{element.tags}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="difficulty">
+      <th mat-header-cell *matHeaderCellDef> Difficulty</th>
+      <td mat-cell *matCellDef="let element"> {{element.difficulty}} </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef><span *ngIf="this.addedQuestions.length > 0">Actions</span></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="editQuestion(element)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteQuestion(element)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="addButton">
+      <td mat-footer-cell *matFooterCellDef colspan="7" style="text-align: center;">
+        <button mat-raised-button color="primary" (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          New Question
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="['addButton']" class=""></tr>
+  </table>
+  <button *ngIf="addedQuestions.length > 0" mat-raised-button color="primary" (click)="saveQuestions()"
+          id="save_questions_button" class="flex flex-row">
+    <span>Save Questions</span>
+
+    <mat-spinner *ngIf="this.loadingSave" class="fill-gray-200 inline-block ml-2" diameter="20"
+                 strokeWidth="3"></mat-spinner>
+
+  </button>
+</div>
