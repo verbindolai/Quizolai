@@ -10,7 +10,6 @@ const QuestionsController = {
     async getSafe(req : Request, res: Response) {
         try {
             const questions = await QuestionsService.getSafeQuestions();
-            console.log(questions);
             log.debug("Getting Questions.");
             res.status(200).send(questions);
         } catch (err) {
